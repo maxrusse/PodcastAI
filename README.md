@@ -34,7 +34,7 @@ cp transcript.txt.example transcript.txt
 #### Quick usage summary
 
 - **OpenAI provider**: local file input via `--audio-file` (for example `podcast.mp3` or `podcast.mp4`), writes local `transcript.txt`.
-- **Google provider**: GCS input via `--audio-gcs-uri` (for example `gs://bucket/podcast.mp3` or `gs://bucket/podcast.mp4`), writes transcript JSON in GCS.
+- **Google provider**: input via `--audio-gcs-uri` **or** local `--audio-file` (uploaded to a temporary GCS object), writes transcript JSON in GCS.
 - Use `--dry-run` to validate parameters and required combinations without making API calls.
 
 Example validation:
@@ -42,6 +42,7 @@ Example validation:
 ```bash
 python transcribe_audio.py --provider openai --audio-file ./podcast.mp4 --dry-run
 python transcribe_audio.py --provider google --audio-gcs-uri gs://YOUR_BUCKET/podcast.mp3 --gcs-output-prefix gs://YOUR_BUCKET/stt_out/ --dry-run
+python transcribe_audio.py --provider google --audio-file ./podcast.mp4 --gcs-output-prefix gs://YOUR_BUCKET/stt_out/ --dry-run
 ```
 
 #### OpenAI (local MP3/MP4 -> `transcript.txt` + optional diarization JSON)
@@ -62,7 +63,7 @@ MP4 example:
 python transcribe_audio.py --provider openai --audio-file ./lecture.mp4 --language de
 ```
 
-#### Google Speech-to-Text v2 (GCS MP3/MP4 -> transcript JSON in GCS)
+#### Google Speech-to-Text v2 (GCS URI or local MP3/MP4 -> transcript JSON in GCS)
 
 ```bash
 export GOOGLE_CLOUD_PROJECT="..."
@@ -83,6 +84,25 @@ python transcribe_audio.py \
   --audio-gcs-uri gs://YOUR_BUCKET/lecture.mp4 \
   --gcs-output-prefix gs://YOUR_BUCKET/stt_out/
 ```
+
+Local file upload example (Google mode):
+
+```bash
+export GOOGLE_CLOUD_PROJECT="..."
+python transcribe_audio.py \
+  --provider google \
+  --audio-file ./lecture.mp4 \
+  --gcs-output-prefix gs://YOUR_BUCKET/stt_out/ \
+  --google-temp-upload-prefix tmp/transcribe_audio_uploads \
+  --google-delete-temp-upload \
+  --google-manifest-out out_google/stt_manifest.json
+```
+
+For local upload in Google mode, your credentials must allow both Speech and Cloud Storage operations:
+
+- `GOOGLE_CLOUD_PROJECT` must be set.
+- IAM permissions needed include uploading/deleting temporary objects in the target bucket (for example `storage.objects.create` and optionally `storage.objects.delete` when using `--google-delete-temp-upload`).
+- Permissions for Speech-to-Text v2 batch recognition are still required.
 
 Google batch mode writes recognition output to GCS. Use the reported output URI (or `--google-manifest-out`) to fetch JSON and generate/merge `transcript.txt` for downstream course building.
 
