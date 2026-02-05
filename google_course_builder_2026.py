@@ -142,7 +142,7 @@ def build_after_episode_package(client: genai.Client, transcript: str, course_pl
 
 def build_z3_smp(client: genai.Client, transcript: str) -> dict[str, Any]:
     prompt = (
-        "Erzeuge ein JSON fuer eine strukturierte muendliche Pruefung Z3-SMP in der Zahnaerztlichen Prothetik. "
+        f"Erzeuge ein JSON fuer eine strukturierte muendliche Pruefung Z3-SMP im Fach {SMP_FACH}. "
         "Enthalte: fach, dauer_min, pruefungsziele, fallbeschreibung, aufgaben, fragen (genau 2), "
         "erwartungshorizont_note_1, erwartungshorizont_note_3, erwartungshorizont_note_5, prueferkommentar, anhaenge. "
         "Antwort NUR als JSON.\n\n"
@@ -236,8 +236,10 @@ def main() -> None:
     z3_md_path = None
     if MAKE_Z3_SMP:
         z3 = build_z3_smp(client, transcript)
-        write_json(OUT_DIR / "z3_smp_prothetik.json", z3)
-        z3_md_path = OUT_DIR / "z3_smp_prothetik.md"
+        z3_slug = slugify(SMP_FACH) or "generic"
+        z3_json_path = OUT_DIR / f"z3_smp_{z3_slug}.json"
+        write_json(z3_json_path, z3)
+        z3_md_path = OUT_DIR / f"z3_smp_{z3_slug}.md"
         write_text(z3_md_path, package_to_markdown(z3))
 
     extras = [after_md]
