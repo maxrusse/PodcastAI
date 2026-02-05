@@ -29,7 +29,22 @@ cp transcript.txt.example transcript.txt
 
 ### Build transcript from MP3/MP4 first
 
-#### OpenAI (local MP3/MP4 -> `transcript.txt` + diarization JSON)
+`transcribe_audio.py` is the first step before running either course builder.
+
+#### Quick usage summary
+
+- **OpenAI provider**: local file input via `--audio-file` (for example `podcast.mp3` or `podcast.mp4`), writes local `transcript.txt`.
+- **Google provider**: GCS input via `--audio-gcs-uri` (for example `gs://bucket/podcast.mp3` or `gs://bucket/podcast.mp4`), writes transcript JSON in GCS.
+- Use `--dry-run` to validate parameters and required combinations without making API calls.
+
+Example validation:
+
+```bash
+python transcribe_audio.py --provider openai --audio-file ./podcast.mp4 --dry-run
+python transcribe_audio.py --provider google --audio-gcs-uri gs://YOUR_BUCKET/podcast.mp3 --gcs-output-prefix gs://YOUR_BUCKET/stt_out/ --dry-run
+```
+
+#### OpenAI (local MP3/MP4 -> `transcript.txt` + optional diarization JSON)
 
 ```bash
 export OPENAI_API_KEY="..."
@@ -39,6 +54,12 @@ python transcribe_audio.py \
   --language de \
   --transcript-out transcript.txt \
   --diarized-json-out out_openai/diarized_transcript.json
+```
+
+MP4 example:
+
+```bash
+python transcribe_audio.py --provider openai --audio-file ./lecture.mp4 --language de
 ```
 
 #### Google Speech-to-Text v2 (GCS MP3/MP4 -> transcript JSON in GCS)
@@ -52,6 +73,15 @@ python transcribe_audio.py \
   --google-region eu \
   --google-language-code de-DE \
   --google-manifest-out out_google/stt_manifest.json
+```
+
+MP4 example:
+
+```bash
+python transcribe_audio.py \
+  --provider google \
+  --audio-gcs-uri gs://YOUR_BUCKET/lecture.mp4 \
+  --gcs-output-prefix gs://YOUR_BUCKET/stt_out/
 ```
 
 Google batch mode writes recognition output to GCS. Use the reported output URI (or `--google-manifest-out`) to fetch JSON and generate/merge `transcript.txt` for downstream course building.
