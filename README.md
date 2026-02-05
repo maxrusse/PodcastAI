@@ -5,7 +5,7 @@ PodcastAI converts a German podcast/lecture transcript into a complete learning 
 - Structured lesson sections with learning objectives and exam-style questions
 - Optional generated section images and static radiology teaching images
 - Episode-level after-learning package (blueprint 1-8)
-- Z3-SMP style oral exam material for dental prosthetics
+- Optional Z3-SMP style oral exam material for the configured subject
 - Combined DOCX export
 
 This repository is the **first full version** built from `brainstorming.md`.
@@ -130,7 +130,7 @@ Each run creates:
 - `sections/*_openai.png` or `sections/*_gemini.png` (optional)
 - `after_episode_package.json` + `.md`
 - `materials/*.png` (optional)
-- `z3_smp_prothetik.json` + `.md`
+- `z3_smp_<fach-slug>.json` + `.md` (for example `z3_smp_zahnaerztliche-prothetik.json`)
 - `course.docx`
 
 ## Notes
