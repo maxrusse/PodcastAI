@@ -8,8 +8,6 @@ PodcastAI converts a German podcast/lecture transcript into a complete learning 
 - Optional Z3-SMP style oral exam material for the configured subject
 - Combined DOCX export
 
-This repository is the **first full version** built from `brainstorming.md`.
-
 ## Repository structure
 
 - `openai_course_builder_2026.py` - OpenAI pipeline (text + images)
