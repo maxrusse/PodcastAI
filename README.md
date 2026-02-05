@@ -40,6 +40,14 @@ export GEMINI_API_KEY="..."
 python google_course_builder_2026.py
 ```
 
+### Validate external API connectivity
+
+```bash
+python validate_external_apis.py --provider all
+```
+
+This runs lightweight smoke tests against OpenAI and Gemini and reports `PASS`, `FAIL`, or `SKIP` depending on API key availability and call success.
+
 ## Output
 
 OpenAI outputs under `out_openai/` and Gemini outputs under `out_google/`.
