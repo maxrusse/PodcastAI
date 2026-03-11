@@ -3,4 +3,8 @@ __pycache__/
 .venv/
 out_openai/
 out_google/
+out_course/
+*.docx
 transcript.txt
+*.mp4
+Folge 9_default.mp4
